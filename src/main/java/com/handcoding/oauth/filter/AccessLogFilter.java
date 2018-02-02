@@ -47,7 +47,7 @@ public class AccessLogFilter implements Filter {
 		long startDate = System.currentTimeMillis();
 		chain.doFilter(req, response);
 		long endDate = System.currentTimeMillis();
-		logger.info("========================================\trestAPI Access Time:" + (double) (endDate - startDate) / 1000 + "초\t=====================================================");
+		logger.info("========================================\tOAuth2.0 Access Time:" + (double) (endDate - startDate) / 1000 + "초\t=====================================================");
 	}
 	
 	@Override
