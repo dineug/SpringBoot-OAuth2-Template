@@ -3,6 +3,7 @@ package com.handcoding.oauth;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.oauth2.authserver.AuthorizationServerProperties;
@@ -46,7 +47,12 @@ public class OAuth2Application extends WebMvcConfigurerAdapter {
 
 @Configuration
 class OAuth2Configuration {
-
+	
+	/**
+	 * 토큰을 저장할 db접속정보 지정
+	 * @param dataSource
+	 * @return
+	 */
     @Bean
     public TokenStore jdbcTokenStore(DataSource dataSource) {
         return new JdbcTokenStore(dataSource);
@@ -54,6 +60,11 @@ class OAuth2Configuration {
 //        return new JwtTokenStore(jwtAccessTokenConverter());
     }
 
+    /**
+     * client_id와 client_secret을 비교하기위해 쓸 db접속정보 등록
+     * @param dataSource
+     * @return
+     */
     @Bean
     @Primary
     public JdbcClientDetailsService jdbcClientDetailsService(DataSource dataSource) {
@@ -71,13 +82,13 @@ class OAuth2Configuration {
 @Configuration
 class JwtOAuth2AuthorizationServerConfiguration extends OAuth2AuthorizationServerConfiguration {
 
-	private final ClientDetailsService clientDetailsService;
+	@Autowired
+	private ClientDetailsService clientDetailsService;
 	
 	public JwtOAuth2AuthorizationServerConfiguration(BaseClientDetails details,
 			AuthenticationManager authenticationManager, ObjectProvider<TokenStore> tokenStore,
-			ObjectProvider<AccessTokenConverter> tokenConverter, AuthorizationServerProperties properties, ClientDetailsService clientDetailsService) {
+			ObjectProvider<AccessTokenConverter> tokenConverter, AuthorizationServerProperties properties) {
 		super(details, authenticationManager, tokenStore, tokenConverter, properties);
-		this.clientDetailsService = clientDetailsService;
 	}
 
 	/**
